@@ -6,7 +6,6 @@ angulos_observados = []
 suma_teorica = (n+2)*180
 suma_observable = 0
 
-
 def decimal_a_gmd(angulo_decimal ):
     grados, minutos = math.modf(angulo_decimal)
     minutos, segundos = math.modf(minutos*60)
@@ -29,6 +28,15 @@ def parse_gmd_texto(dms_str):
     second += "." + frac_seconds
     return (int(degree), float(minute), float(second))
 
+
+def obtener_angulos_asimov(angulos_corregidos, asimov_base):
+    angulos_asimov = asimov_base
+    yield(angulos_asimov if angulos_asimov<360 else angulos_asimov - 360)
+    for angulo in angulos_corregidos:
+        angulos_asimov = angulos_asimov-180+angulo if angulos_asimov>180 else angulos_asimov+180+angulo
+        yield(angulos_asimov if angulos_asimov<360 else angulos_asimov - 360)
+
+
 print("Ingrese el angulo externo en grados, minutos y segundos de cada vertice: ")
 for i in range(0,n+1):
     angulo = gmd_a_decimal(*parse_gmd_texto(input( str(i+1) + ": " )))
@@ -40,25 +48,9 @@ correcion_angular = (suma_teorica-suma_observable)/n
 
 angulos_corregidos = list(map(lambda angulo : angulo+correcion_angular, angulos_observados[1:]))        
 
-angulos_asimov = [angulos_observados[0]]
-
-def obtener_angulos_asimov(angulos_corregidos, angulo_base):
-    angulos_asimov = angulo_base
-    for angulo in angulos_corregidos:
-        angulos_asimov = angulos_asimov-180+angulo if angulos_asimov>180 else angulos_asimov+180+angulo
-        yield(angulos_asimov)
-
-angulos_asimov += list(obtener_angulos_asimov(angulos_corregidos,angulos_asimov[0]))
+angulos_asimov = list(obtener_angulos_asimov(angulos_corregidos,angulos_observados[0]))
 
 # Preguntar distancia entre vertices y coordenada base
-
-
-
-#obtener_angulos_asimov(angulos_corregidos,angulos_asimov)
-angulos_asimov = list(map(lambda angulo: angulo if angulo<360 else angulo - 360,angulos_asimov))
-
-
-
 
 print(angulos_observados)
 print(angulos_corregidos)
