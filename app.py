@@ -155,3 +155,5 @@ for ns, ew in proyecciones_corregidas:
 
 log(archivo_de_salida, "Coordenadas: ")
 pretty_log(archivo_de_salida, [(round(coordenadas[0],3),round(coordenadas[1],3)) for coordenadas in list(zip(coordenadas_ns,coordenadas_ew))])
+
+archivo_de_salida.close()
