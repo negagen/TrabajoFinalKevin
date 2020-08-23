@@ -85,8 +85,8 @@ angulos_corregidos = list(map(lambda angulo : angulo+correcion_angular, angulos_
 angulos_azimut = list(obtener_angulos_azimut(angulos_corregidos,angulo_azimut_base))
 print(angulos_azimut)
 
-print("Angulos observados para cada vertice:")
-for grado, minuto, segundo in [decimal_a_gms(angulo) for angulo in angulos_observados]:
+print("Angulos corregidos para cada vertice:")
+for grado, minuto, segundo in [decimal_a_gms(angulo) for angulo in angulos_corregidos]:
     print("{}°\t{}'\t{}\"".format(int(grado),int(minuto),round(segundo)))
 
 print("Azimut para cada vertice:")
