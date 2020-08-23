@@ -77,7 +77,7 @@ angulos_asimut = list(obtener_angulos_asimut(angulos_corregidos,angulo_asimut_ba
 
 print("Asimut para cada vertice:")
 for grado, minuto, segundo in [decimal_a_gms(angulo) for angulo in angulos_asimut]:
-    print("{}°\t{}'\t{}".format(int(grado),int(minuto),round(segundo,2)))
+    print("{}°\t{}'\t{}\"".format(int(grado),int(minuto),int(segundo)))
 
 
 print("Ingrese la distancia entre los vertices:")
@@ -94,19 +94,9 @@ for ns, ew in proyecciones:
 correcion_unitaria_ns = deltas_ns/suma_proyecciones_ns
 correcion_unitaria_ew = deltas_ew/suma_proyecciones_ew
 
-print("Correccion unitaria:")
-pp.pprint((round(correcion_unitaria_ns,5),round(correcion_unitaria_ew,5)))
-
 error_de_cierre_de_la_poligonal = ((deltas_ew*deltas_ew)+(deltas_ns*deltas_ns))**(1/2)
 
-print("Error de cierre de la poligonal:")
-print(round(error_de_cierre_de_la_poligonal,3))
-
 precision = suma_distancias/error_de_cierre_de_la_poligonal
-
-print("Precision:")
-print(round(precision,3))
-
 
 proyecciones_corregidas = list(map(
     lambda ns_ew:(
@@ -118,9 +108,17 @@ proyecciones_corregidas = list(map(
 print("Proyecciones en terreno:")
 pp.pprint([(round(proyeccion[0],3),round(proyeccion[1],3)) for proyeccion in proyecciones])
 
+print("Correccion unitaria:")
+pp.pprint((round(correcion_unitaria_ns,5),round(correcion_unitaria_ew,5)))
 
 print("Proyecciones corregidas:")
 pp.pprint([(round(proyeccion[0],3),round(proyeccion[1],3)) for proyeccion in proyecciones_corregidas])
+
+print("Error de cierre de la poligonal:")
+print(round(error_de_cierre_de_la_poligonal,3))
+
+print("Precision:")
+print(round(precision,3))
 
 coordenada_ns = float(input("Ingrese la coordenada norte:"))
 coordenada_ew = float(input("Ingrese la coordenada este:"))
