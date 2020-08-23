@@ -12,11 +12,11 @@ suma_teorica = (n+2)*180
 pp = pprint.PrettyPrinter(indent=4)
 
 def arreglar_angulos(angulo):
-    if(angulo>360):
-        angulo-360
+    if(angulo>=360):
+        angulo = angulo-360
         arreglar_angulos(angulo)
     elif (angulo<0):
-        angulo+360
+        angulo = angulo+360
         arreglar_angulos(angulo)
     else:
         return angulo
