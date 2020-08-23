@@ -2,9 +2,12 @@ import re, math
 
 n = int(input("Ingrese el numero de vertices: "))
 
-angulos_observados = []
-suma_teorica = (n+2)*180
-suma_observable = 0
+deltas_ns = 0
+deltas_ew = 0
+suma_proyecciones_ns = 0
+suma_proyecciones_ew = 0
+
+suma_teorica = (n+2)*180 
 
 def decimal_a_gmd(angulo_decimal ):
     grados, minutos = math.modf(angulo_decimal)
@@ -36,22 +39,101 @@ def obtener_angulos_asimov(angulos_corregidos, asimov_base):
         angulos_asimov = angulos_asimov-180+angulo if angulos_asimov>180 else angulos_asimov+180+angulo
         yield(angulos_asimov if angulos_asimov<360 else angulos_asimov - 360)
 
+def preguntar_angulos(n):
+    for i in range(0,n):
+        angulo = gmd_a_decimal(*parse_gmd_texto(input( str(i+1) + ": " )))
+        yield(angulo)
+
+def hallar_proyeccion(distancia, angulo):
+    proyeccion_ns = math.cos(math.radians(angulo))*distancia
+    proyeccion_ew = math.sin(math.radians(angulo))*distancia
+
+    print((proyeccion_ns, proyeccion_ew ))
+
+    return proyeccion_ns, proyeccion_ew
+
+def hallar_proyecciones(distancias,angulos):
+    for distancia, angulo in zip(distancias, angulos):
+        print((distancia, angulo))
+        yield(hallar_proyeccion(distancia, angulo))
+
+def preguntar_distancias(n):
+    for i in range(n):
+        yield(float(input()))
+
+print("Ingrese el angulo asimov base en grados, minutos y segundos de cada vertice: ")
+angulo_asimov_base = list(preguntar_angulos(1))[0]
 
 print("Ingrese el angulo externo en grados, minutos y segundos de cada vertice: ")
-for i in range(0,n+1):
-    angulo = gmd_a_decimal(*parse_gmd_texto(input( str(i+1) + ": " )))
-    suma_observable += angulo if i>0 else 0
-    print(suma_observable)
-    angulos_observados.append(angulo)
+angulos_observados = list(preguntar_angulos(n))
+
+suma_observable = sum(angulos_observados)
 
 correcion_angular = (suma_teorica-suma_observable)/n
 
-angulos_corregidos = list(map(lambda angulo : angulo+correcion_angular, angulos_observados[1:]))        
+print("Correcion angular: "+ str(correcion_angular))
 
-angulos_asimov = list(obtener_angulos_asimov(angulos_corregidos,angulos_observados[0]))
+angulos_corregidos = list(map(lambda angulo : angulo+correcion_angular, angulos_observados))
 
+angulos_asimov = list(obtener_angulos_asimov(angulos_corregidos,angulo_asimov_base))
+
+print("Asimut para cada vertice:")
+print(angulos_asimov)
 # Preguntar distancia entre vertices y coordenada base
 
-print(angulos_observados)
-print(angulos_corregidos)
-print(angulos_asimov)
+print("Ingrese la distancia entre los vertices:")
+distancias = list(preguntar_distancias(n))
+proyecciones = list(hallar_proyecciones(distancias, angulos_asimov))
+suma_distancias = sum(distancias)
+
+for ns, ew in proyecciones:
+    deltas_ns += ns
+    deltas_ew += ew
+    suma_proyecciones_ns += math.fabs(ns) 
+    suma_proyecciones_ew += math.fabs(ew)
+
+correcion_unitaria_ns = deltas_ns/suma_proyecciones_ns
+correcion_unitaria_ew = deltas_ew/suma_proyecciones_ew
+
+print("Correccion unitaria:")
+print((correcion_unitaria_ns,correcion_unitaria_ew))
+
+error_de_cierre_de_la_poligonal = ((deltas_ew*deltas_ew)+(deltas_ns*deltas_ns))**(1/2)
+
+print("Error de cierre de la poligonal:")
+print(error_de_cierre_de_la_poligonal)
+
+precision = suma_distancias/error_de_cierre_de_la_poligonal
+
+print("Precision:")
+print(precision)
+
+
+proyecciones_corregidas = list(map(
+    lambda ns_ew:(
+        ns_ew[0] - math.fabs(ns_ew[0])*correcion_unitaria_ns,
+        ns_ew[1] - math.fabs(ns_ew[1])*correcion_unitaria_ew
+    ), proyecciones))
+
+
+print("Proyecciones en terreno:")
+print(proyecciones)
+
+
+print("Proyecciones corregidas:")
+print(list(proyecciones_corregidas))
+
+coordenada_ns = int(input("Ingrese la coordenada norte:"))
+coordenada_ew = int(input("Ingrese la coordenada este:"))
+
+coordenadas_ns = [coordenada_ns]
+coordenadas_ew = [coordenada_ew]
+
+for ns, ew in proyecciones_corregidas:
+    coordenada_ns = coordenada_ns + ns
+    coordenadas_ns.append(coordenada_ns)
+    coordenada_ew = coordenada_ew + ew
+    coordenadas_ew.append(coordenada_ew)
+
+print("Coordenadas: ")
+print(list(zip(coordenadas_ns,coordenadas_ew)))
