@@ -11,13 +11,11 @@ suma_teorica = (n+2)*180
 
 pp = pprint.PrettyPrinter(indent=4)
 
-def arreglar_angulos(angulo):
+def arreglar_angulo(angulo):
     if(angulo>=360):
-        angulo = angulo-360
-        arreglar_angulos(angulo)
+        return arreglar_angulo(angulo-360)
     elif (angulo<0):
-        angulo = angulo+360
-        arreglar_angulos(angulo)
+        return arreglar_angulo(angulo+360)
     else:
         return angulo
 
@@ -46,10 +44,11 @@ def parse_gms_texto(dms_str):
 
 def obtener_angulos_azimut(angulos_corregidos, azimut_base):
     angulos_azimut = azimut_base
-    yield(arreglar_angulos(angulos_azimut))
+    yield(arreglar_angulo(angulos_azimut))
     for angulo in angulos_corregidos:
         angulos_azimut = angulos_azimut-180+angulo if angulos_azimut>180 else angulos_azimut+180+angulo
-        yield(arreglar_angulos(angulos_azimut))
+        print(angulos_azimut)
+        yield(arreglar_angulo(angulos_azimut))
 
 def preguntar_angulos(n):
     for i in range(0,n):
@@ -84,6 +83,7 @@ print("Correcion angular: "+ str(round(correcion_angular,6)))
 angulos_corregidos = list(map(lambda angulo : angulo+correcion_angular, angulos_observados))
 
 angulos_azimut = list(obtener_angulos_azimut(angulos_corregidos,angulo_azimut_base))
+print(angulos_azimut)
 
 print("Azimut para cada vertice:")
 for grado, minuto, segundo in [decimal_a_gms(angulo) for angulo in angulos_azimut]:
