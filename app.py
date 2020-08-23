@@ -77,7 +77,7 @@ angulos_asimut = list(obtener_angulos_asimut(angulos_corregidos,angulo_asimut_ba
 
 print("Asimut para cada vertice:")
 for grado, minuto, segundo in [decimal_a_gms(angulo) for angulo in angulos_asimut]:
-    print("{}°\t{}'\t{}\"".format(int(grado),int(minuto),int(segundo)))
+    print("{}°\t{}'\t{}\"".format(int(grado),int(minuto),round(segundo)))
 
 
 print("Ingrese la distancia entre los vertices:")
