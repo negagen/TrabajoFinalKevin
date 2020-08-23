@@ -10,8 +10,8 @@ suma_proyecciones_ew = 0
 suma_teorica = (n+2)*180 
 
 def decimal_a_gmd(angulo_decimal ):
-    grados, minutos = math.modf(angulo_decimal)
-    minutos, segundos = math.modf(minutos*60)
+    minutos, grados  = math.modf(angulo_decimal)
+    segundos, minutos = math.modf(minutos*60)
     segundos = segundos*60
     return (grados, minutos, segundos)
 
