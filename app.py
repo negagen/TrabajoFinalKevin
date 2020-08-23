@@ -11,18 +11,18 @@ suma_teorica = (n+2)*180
 
 pp = pprint.PrettyPrinter(indent=4)
 
-def decimal_a_gmd(angulo_decimal ):
+def decimal_a_gms(angulo_decimal ):
     minutos, grados  = math.modf(angulo_decimal)
     segundos, minutos = math.modf(minutos*60)
     segundos = segundos*60
     return (grados, minutos, segundos)
 
 
-def gmd_a_decimal(grados, minutos, segundos):
+def gms_a_decimal(grados, minutos, segundos):
     return grados + minutos / 60 + segundos / 3600
 
 
-def parse_gmd_texto(dms_str):
+def parse_gms_texto(dms_str):
     numbers = [*filter(len, re.split('\D+', dms_str, maxsplit=4))]
 
     degree = numbers[0]
@@ -43,7 +43,7 @@ def obtener_angulos_asimut(angulos_corregidos, asimut_base):
 
 def preguntar_angulos(n):
     for i in range(0,n):
-        angulo = gmd_a_decimal(*parse_gmd_texto(input( str(i+1) + ": " )))
+        angulo = gms_a_decimal(*parse_gms_texto(input( str(i+1) + ": " )))
         yield(angulo)
 
 def hallar_proyeccion(distancia, angulo):
@@ -76,7 +76,7 @@ angulos_corregidos = list(map(lambda angulo : angulo+correcion_angular, angulos_
 angulos_asimut = list(obtener_angulos_asimut(angulos_corregidos,angulo_asimut_base))
 
 print("Asimut para cada vertice:")
-for grado, minuto, segundo in [decimal_a_gmd(angulo) for angulo in angulos_asimut]:
+for grado, minuto, segundo in [decimal_a_gms(angulo) for angulo in angulos_asimut]:
     print("{}°\t{}'\t{}".format(int(grado),int(minuto),round(segundo,2)))
 
 
@@ -122,8 +122,8 @@ pp.pprint([(round(proyeccion[0],3),round(proyeccion[1],3)) for proyeccion in pro
 print("Proyecciones corregidas:")
 pp.pprint([(round(proyeccion[0],3),round(proyeccion[1],3)) for proyeccion in proyecciones_corregidas])
 
-coordenada_ns = int(input("Ingrese la coordenada norte:"))
-coordenada_ew = int(input("Ingrese la coordenada este:"))
+coordenada_ns = float(input("Ingrese la coordenada norte:"))
+coordenada_ew = float(input("Ingrese la coordenada este:"))
 
 coordenadas_ns = [coordenada_ns]
 coordenadas_ew = [coordenada_ew]
