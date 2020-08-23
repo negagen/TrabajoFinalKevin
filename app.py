@@ -47,7 +47,6 @@ def obtener_angulos_azimut(angulos_corregidos, azimut_base):
     yield(arreglar_angulo(angulos_azimut))
     for angulo in angulos_corregidos:
         angulos_azimut = angulos_azimut-180+angulo if angulos_azimut>180 else angulos_azimut+180+angulo
-        print(angulos_azimut)
         yield(arreglar_angulo(angulos_azimut))
 
 def preguntar_angulos(n):
