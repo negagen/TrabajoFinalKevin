@@ -47,19 +47,15 @@ def preguntar_angulos(n):
 def hallar_proyeccion(distancia, angulo):
     proyeccion_ns = math.cos(math.radians(angulo))*distancia
     proyeccion_ew = math.sin(math.radians(angulo))*distancia
-
-    print((proyeccion_ns, proyeccion_ew ))
-
     return proyeccion_ns, proyeccion_ew
 
 def hallar_proyecciones(distancias,angulos):
     for distancia, angulo in zip(distancias, angulos):
-        print((distancia, angulo))
         yield(hallar_proyeccion(distancia, angulo))
 
 def preguntar_distancias(n):
     for i in range(n):
-        yield(float(input()))
+        yield(float(input("")))
 
 print("Ingrese el angulo asimov base en grados, minutos y segundos de cada vertice: ")
 angulo_asimov_base = list(preguntar_angulos(1))[0]
@@ -78,7 +74,7 @@ angulos_corregidos = list(map(lambda angulo : angulo+correcion_angular, angulos_
 angulos_asimov = list(obtener_angulos_asimov(angulos_corregidos,angulo_asimov_base))
 
 print("Asimut para cada vertice:")
-print(angulos_asimov)
+print([decimal_a_gmd(angulo) for angulo in angulos_asimov])
 # Preguntar distancia entre vertices y coordenada base
 
 print("Ingrese la distancia entre los vertices:")
