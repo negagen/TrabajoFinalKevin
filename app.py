@@ -1,4 +1,5 @@
-import re, math, pprint
+import re, math
+import pprint as pp
 
 n = int(input("Ingrese el numero de vertices: "))
 
@@ -9,7 +10,15 @@ suma_proyecciones_ew = 0
 
 suma_teorica = (n+2)*180 
 
-pp = pprint.PrettyPrinter(indent=4)
+archivo_de_salida = open("salida.txt","w")
+
+def log(archivo, texto):
+    print(texto)
+    archivo.write(str(texto)+"\n")
+
+def pretty_log(archivo, texto):
+    pp.pprint(texto)
+    pp.pprint(texto, archivo)
 
 def arreglar_angulo(angulo):
     if(angulo>=360):
@@ -77,19 +86,19 @@ suma_observable = sum(angulos_observados)
 
 correcion_angular = (suma_teorica-suma_observable)/n
 
-print("Correcion angular: "+ str(round(correcion_angular,6)))
+log(archivo_de_salida,"Correcion angular: "+ str(round(correcion_angular,6)))
 
 angulos_corregidos = list(map(lambda angulo : angulo+correcion_angular, angulos_observados))
 
 angulos_azimut = list(obtener_angulos_azimut(angulos_corregidos,angulo_azimut_base))
 
-print("Angulos corregidos para cada vertice:")
+log(archivo_de_salida,"Angulos corregidos para cada vertice:")
 for grado, minuto, segundo in [decimal_a_gms(angulo) for angulo in angulos_corregidos]:
-    print("{}°\t{}'\t{}\"".format(int(grado),int(minuto),round(segundo)))
+    log(archivo_de_salida,"{}°\t{}'\t{}\"".format(int(grado),int(minuto),round(segundo)))
 
-print("Azimut para cada vertice:")
+log(archivo_de_salida,"Azimut para cada vertice:")
 for grado, minuto, segundo in [decimal_a_gms(angulo) for angulo in angulos_azimut]:
-    print("{}°\t{}'\t{}\"".format(int(grado),int(minuto),round(segundo)))
+    log(archivo_de_salida,"{}°\t{}'\t{}\"".format(int(grado),int(minuto),round(segundo)))
 
 
 print("Ingrese la distancia entre los vertices:")
@@ -117,20 +126,20 @@ proyecciones_corregidas = list(map(
     ), proyecciones))
 
 
-print("Proyecciones en terreno:")
-pp.pprint([(round(proyeccion[0],3),round(proyeccion[1],3)) for proyeccion in proyecciones])
+log(archivo_de_salida, "Proyecciones en terreno:")
+pretty_log(archivo_de_salida, [(round(proyeccion[0],3),round(proyeccion[1],3)) for proyeccion in proyecciones])
 
-print("Correccion unitaria:")
-pp.pprint((round(correcion_unitaria_ns,5),round(correcion_unitaria_ew,5)))
+log(archivo_de_salida, "Correccion unitaria:")
+pretty_log(archivo_de_salida, (round(correcion_unitaria_ns,5),round(correcion_unitaria_ew,5)))
 
-print("Proyecciones corregidas:")
-pp.pprint([(round(proyeccion[0],3),round(proyeccion[1],3)) for proyeccion in proyecciones_corregidas])
+log(archivo_de_salida, "Proyecciones corregidas:")
+pretty_log(archivo_de_salida, [(round(proyeccion[0],3),round(proyeccion[1],3)) for proyeccion in proyecciones_corregidas])
 
-print("Error de cierre de la poligonal:")
-print(round(error_de_cierre_de_la_poligonal,3))
+log(archivo_de_salida, "Error de cierre de la poligonal:")
+log(archivo_de_salida, round(error_de_cierre_de_la_poligonal,3))
 
-print("Precision:")
-print("1:{}".format(round(precision)))
+log(archivo_de_salida, "Precision:")
+log(archivo_de_salida, "1:{}".format(round(precision)))
 
 coordenada_ns = float(input("Ingrese la coordenada norte:"))
 coordenada_ew = float(input("Ingrese la coordenada este:"))
@@ -144,5 +153,5 @@ for ns, ew in proyecciones_corregidas:
     coordenada_ew = coordenada_ew + ew
     coordenadas_ew.append(coordenada_ew)
 
-print("Coordenadas: ")
-pp.pprint([(round(coordenadas[0],3),round(coordenadas[1],3)) for coordenadas in list(zip(coordenadas_ns,coordenadas_ew))])
+log(archivo_de_salida, "Coordenadas: ")
+pretty_log(archivo_de_salida, [(round(coordenadas[0],3),round(coordenadas[1],3)) for coordenadas in list(zip(coordenadas_ns,coordenadas_ew))])
