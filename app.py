@@ -11,6 +11,16 @@ suma_teorica = (n+2)*180
 
 pp = pprint.PrettyPrinter(indent=4)
 
+def arreglar_angulos(angulo):
+    if(angulo>360):
+        angulo-360
+        arreglar_angulos(angulo)
+    elif (angulo<0):
+        angulo+360
+        arreglar_angulos(angulo)
+    else:
+        return angulo
+
 def decimal_a_gms(angulo_decimal ):
     minutos, grados  = math.modf(angulo_decimal)
     segundos, minutos = math.modf(minutos*60)
@@ -34,12 +44,12 @@ def parse_gms_texto(dms_str):
     return (int(degree), float(minute), float(second))
 
 
-def obtener_angulos_asimut(angulos_corregidos, asimut_base):
-    angulos_asimut = asimut_base
-    yield(angulos_asimut if angulos_asimut<360 else angulos_asimut - 360)
+def obtener_angulos_azimut(angulos_corregidos, azimut_base):
+    angulos_azimut = azimut_base
+    yield(arreglar_angulos(angulos_azimut))
     for angulo in angulos_corregidos:
-        angulos_asimut = angulos_asimut-180+angulo if angulos_asimut>180 else angulos_asimut+180+angulo
-        yield(angulos_asimut if angulos_asimut<360 else angulos_asimut - 360)
+        angulos_azimut = angulos_azimut-180+angulo if angulos_azimut>180 else angulos_azimut+180+angulo
+        yield(arreglar_angulos(angulos_azimut))
 
 def preguntar_angulos(n):
     for i in range(0,n):
@@ -59,8 +69,8 @@ def preguntar_distancias(n):
     for i in range(n):
         yield(float(input("")))
 
-print("Ingrese el angulo asimut base en grados, minutos y segundos de cada vertice: ")
-angulo_asimut_base = list(preguntar_angulos(1))[0]
+print("Ingrese el angulo azimut base en grados, minutos y segundos de cada vertice: ")
+angulo_azimut_base = list(preguntar_angulos(1))[0]
 
 print("Ingrese el angulo externo en grados, minutos y segundos de cada vertice: ")
 angulos_observados = list(preguntar_angulos(n))
@@ -69,20 +79,20 @@ suma_observable = sum(angulos_observados)
 
 correcion_angular = (suma_teorica-suma_observable)/n
 
-print("Correcion angular: "+ str(round(correcion_angular,5)))
+print("Correcion angular: "+ str(round(correcion_angular,6)))
 
 angulos_corregidos = list(map(lambda angulo : angulo+correcion_angular, angulos_observados))
 
-angulos_asimut = list(obtener_angulos_asimut(angulos_corregidos,angulo_asimut_base))
+angulos_azimut = list(obtener_angulos_azimut(angulos_corregidos,angulo_azimut_base))
 
-print("Asimut para cada vertice:")
-for grado, minuto, segundo in [decimal_a_gms(angulo) for angulo in angulos_asimut]:
+print("Azimut para cada vertice:")
+for grado, minuto, segundo in [decimal_a_gms(angulo) for angulo in angulos_azimut]:
     print("{}°\t{}'\t{}\"".format(int(grado),int(minuto),round(segundo)))
 
 
 print("Ingrese la distancia entre los vertices:")
 distancias = list(preguntar_distancias(n))
-proyecciones = list(hallar_proyecciones(distancias, angulos_asimut))
+proyecciones = list(hallar_proyecciones(distancias, angulos_azimut))
 suma_distancias = sum(distancias)
 
 for ns, ew in proyecciones:
@@ -118,7 +128,7 @@ print("Error de cierre de la poligonal:")
 print(round(error_de_cierre_de_la_poligonal,3))
 
 print("Precision:")
-print(round(precision,3))
+print("1:{}".format(round(precision)))
 
 coordenada_ns = float(input("Ingrese la coordenada norte:"))
 coordenada_ew = float(input("Ingrese la coordenada este:"))
